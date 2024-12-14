@@ -8,5 +8,11 @@ const pool = new Pool({
     password: process.env.DB_PASS,
     port: process.env.DB_PORT
 })
+pool.on('connect', () => {
+    console.log('Connected to the database successfully')
+})
+pool.on('error', (err) => {
+    console.error('Error connecting to the database', err.stack)
+})
 
 module.exports = pool

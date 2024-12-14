@@ -29,7 +29,7 @@ router.post('/signup', async (req, res) => {
     }
   })
 
-// login route  
+// login route
 router.post('/login', async (req, res) => {
     const { email, password } = req.body
     try {
@@ -51,7 +51,6 @@ router.post('/login', async (req, res) => {
 
 
 // instagram OAuth implementation
-
   passport.use(
     new OAuth2Strategy({
             authorizationURL: 'https://api.instagram.com/oauth/authorize',
