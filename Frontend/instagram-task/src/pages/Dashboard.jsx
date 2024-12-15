@@ -9,19 +9,20 @@ import { Circles } from 'react-loader-spinner'
 const Dashboard = () => {
   const [posts, setPosts] = useState([])
   const [selectedImage, setSelectedImage] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loadingPosts, setLoadingPosts] = useState(false)
+  const [loadingLogout, setLoadingLogout] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true)
+      setLoadingPosts(true)
       try {
         const data = await fetching_post()
         setPosts(data)
       } catch (error) {
         console.error('Error fetching posts:', error)
       } finally {
-        setLoading(false)
+        setLoadingPosts(false)
       }
     }
     fetchPosts()
@@ -35,14 +36,14 @@ const Dashboard = () => {
   }
 
   const handleLogout = async () => {
-    setLoading(true)
+    setLoadingLogout(true)
     try {
       localStorage.removeItem('accessToken')
       navigate('/')
     } catch (error) {
       console.error('Error during logout:', error)
     } finally {
-      setLoading(false)
+      setLoadingLogout(false)
       window.location.reload()
     }
   }
@@ -51,7 +52,7 @@ const Dashboard = () => {
     <>
       <div className='bg-gray-300 h-full'>
         <Navbar />
-        {loading ? (
+        {loadingPosts ? (
           <div className="flex justify-center items-center h-full">
             <Circles color="#00BFFF" height={80} width={80} />
           </div>
@@ -68,7 +69,7 @@ const Dashboard = () => {
         </div>
       </div>
       <Button classname={`flex justify-center px-8 my-10 mx-auto`} text={"Logout"} onclick={handleLogout} />
-      {loading && (
+      {loadingLogout && (
         <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
           <Circles color="#00BFFF" height={80} width={80} />
         </div>
