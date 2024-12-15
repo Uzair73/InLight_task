@@ -6,6 +6,7 @@ const postRoutes = require('./Routes/post')
 require('dotenv').config()
 
 const app = express()
+const allowedOrigins = ['https://in-light-task.vercel.app', 'https://instagramclonetask.vercel.app/'];
 app.use(cors())
 app.use(bodyParser.json())
 
