@@ -33,8 +33,8 @@ const Login = () => {
     setLoading(true)
     try {
       const response = isSignup ? await signup(data) : await login(data)
-      console.log({ data: response.message })
-      localStorage.setItem('accessToken', response.token)
+      console.log({ data: response.session.access_token })
+      localStorage.setItem('accessToken', response.session.access_token)
       Swal.fire({
         icon: 'success',
         title: response.message,
@@ -43,6 +43,7 @@ const Login = () => {
       })
       setTimeout(() => {
         window.location.reload()
+        navigate('/dashboard')
       }, 500)
     } catch (error) {
       console.error('Error:', error)

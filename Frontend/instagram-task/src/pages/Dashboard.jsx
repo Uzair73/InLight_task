@@ -4,16 +4,25 @@ import User_posts from '../components/Post'
 import { fetching_post } from '../api/api'
 import Button from '../components/Button'
 import { useNavigate } from 'react-router-dom'
+import { Circles } from 'react-loader-spinner'
 
 const Dashboard = () => {
   const [posts, setPosts] = useState([])
-  const [selectedImage, setSelectedImage] = useState(null) // New state for selected image
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const data = await fetching_post()
-      setPosts(data)
+      setLoading(true)
+      try {
+        const data = await fetching_post()
+        setPosts(data)
+      } catch (error) {
+        console.error('Error fetching posts:', error)
+      } finally {
+        setLoading(false)
+      }
     }
     fetchPosts()
   }, [])
@@ -21,21 +30,34 @@ const Dashboard = () => {
   const handleImageChange = (event) => {
     const file = event.target.files[0]
     if (file) {
-      setSelectedImage(URL.createObjectURL(file)) // Create a preview URL
+      setSelectedImage(URL.createObjectURL(file))
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken')
-    window.location.reload()
-    navigate('/')
+  const handleLogout = async () => {
+    setLoading(true)
+    try {
+      localStorage.removeItem('accessToken')
+      navigate('/')
+    } catch (error) {
+      console.error('Error during logout:', error)
+    } finally {
+      setLoading(false)
+      window.location.reload()
+    }
   }
 
   return (
     <>
       <div className='bg-gray-300 h-full'>
         <Navbar />
-        <User_posts posts={posts} />
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <Circles color="#00BFFF" height={80} width={80} />
+          </div>
+        ) : (
+          <User_posts posts={posts} />
+        )}
         <div className="my-4">
           <input type="file" accept="image/*" onChange={handleImageChange} />
           {selectedImage && (
@@ -46,6 +68,11 @@ const Dashboard = () => {
         </div>
       </div>
       <Button classname={`flex justify-center px-8 my-10 mx-auto`} text={"Logout"} onclick={handleLogout} />
+      {loading && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <Circles color="#00BFFF" height={80} width={80} />
+        </div>
+      )}
     </>
   )
 }
